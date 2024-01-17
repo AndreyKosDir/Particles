@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
+import {degreesToRadians} from "./src/Utils";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001, 1000);
@@ -27,11 +28,11 @@ const sphere = new THREE.Mesh( geometry, material );
 sphere.rotateZ(10);
 scene.add(sphere);
 
-const Radius = 8;
+const Radius = 2;
 
-const satelliteGeometry = new THREE.SphereGeometry(1);
+const satelliteGeometry = new THREE.SphereGeometry(0.2);
 const satelliteMaterial = new THREE.MeshBasicMaterial({
-    color: '#9d2f2f',
+    color: 'white',
     wireframe: true
 });
 const satellite = new THREE.Mesh( satelliteGeometry, satelliteMaterial );
@@ -41,15 +42,15 @@ const satellite = new THREE.Mesh( satelliteGeometry, satelliteMaterial );
 
 scene.add(satellite);
 
-function calcYCoordinate(x, centerX, centerY, radius) {
-    const y = Math.sqrt(Math.abs(radius**2 - (x - centerX)**2)) + centerY;
-    return direction === 'minus' ? y : -y;
-}
-
-function calcYCoordinate3D(x, z, centerX, centerY, centerZ, radius) {
-    const y = Math.sqrt(Math.abs(radius**2 - (x - centerX)**2 - (z - centerZ)**2)) + centerY;
-    return direction === 'minus' ? y : -y;
-}
+// function calcYCoordinate(x, centerX, centerY, radius) {
+//     const y = Math.sqrt(Math.abs(radius**2 - (x - centerX)**2)) + centerY;
+//     return direction === 'minus' ? y : -y;
+// }
+//
+// function calcYCoordinate3D(x, z, centerX, centerY, centerZ, radius) {
+//     const y = Math.sqrt(Math.abs(radius**2 - (x - centerX)**2 - (z - centerZ)**2)) + centerY;
+//     return direction === 'minus' ? y : -y;
+// }
 
 // сладкий коэффициент
 // +Math.cos(Math.PI/180*90).toFixed(3)
@@ -58,8 +59,8 @@ function calcYCoordinate3D(x, z, centerX, centerY, centerZ, radius) {
 // (x - h)^2 + (y - k)^2 + (z - l)^2 = r^2
 // где h, k, l - координаты центра окружности для осей x, y, z соответственно
 
-let direction = 'minus';
-let angleU = 20;
+// let direction = 'minus';
+let angleU = 50;
 // Пока не на что не влияет
 let angleQ = 0;
 
@@ -72,7 +73,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 // satellite.position.x = Math.cos(Math.PI/180*20)*Radius;
 // satellite.position.y = Math.sin(Math.PI/180*20)*Radius;
 
-const Radius3D = Math.sqrt(satellite.position.x**2 + satellite.position.y**2);
+// const Radius3D = Math.sqrt(satellite.position.x**2 + satellite.position.y**2);
 
 
 
@@ -80,13 +81,7 @@ function animate() {
     requestAnimationFrame( animate );
     // sphere.rotation.y += 0.001;
 
-    // angle += 1;
-    //
-    // if (satellite.position.x >= Radius) {
-    //     direction = 'minus';
-    // } else if (satellite.position.x <= - (Radius)) {
-    //     direction = 'plus';
-    // }
+
     //
     // satellite.position.x = +Math.cos(Math.PI/180*angle).toFixed(3) * Radius;
     // satellite.position.y = calcYCoordinate(satellite.position.x, 0, 0, Radius);
@@ -106,11 +101,11 @@ function animate() {
     // let angleQ = 0;
     // angleQ += 0.1;
 
-    angleQ += 1;
+    angleQ += 2;
     angleU += 0;
-    satellite.position.z = Radius * +Math.sin(Math.PI/180*angleQ).toFixed(4) * +Math.cos(Math.PI/180*angleU).toFixed(4);
-    satellite.position.y = Radius * +Math.sin(Math.PI/180*angleQ).toFixed(4) * +Math.sin(Math.PI/180*angleU).toFixed(4) ;
-    satellite.position.x = Radius * +Math.cos(Math.PI/180*angleQ).toFixed(4)
+    satellite.position.z = Radius * Math.sin(degreesToRadians(angleQ)) * Math.cos(degreesToRadians(angleU))
+    satellite.position.y = Radius * Math.sin(degreesToRadians(angleQ)) * Math.sin(degreesToRadians(angleU))
+    satellite.position.x = Radius * Math.cos(degreesToRadians(angleQ))
 
     // варианты вращений:
     // +angleQ
